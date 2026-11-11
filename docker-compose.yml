@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: jobhunt
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobhunt}
+      POSTGRES_DB: jobhunt
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobhunt"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://jobhunt:${POSTGRES_PASSWORD:-jobhunt}@postgres:5432/jobhunt
+      REDIS_URL: redis://redis:6379/0
+      TASK_BACKEND: celery
+      STORAGE_DIR: /app/storage
+    volumes: [resumes:/app/storage]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    ports: ["8000:8000"]
+
+  worker:
+    build: ./backend
+    command: celery -A app.worker.celery_app worker -l info --concurrency 2
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://jobhunt:${POSTGRES_PASSWORD:-jobhunt}@postgres:5432/jobhunt
+      REDIS_URL: redis://redis:6379/0
+      TASK_BACKEND: celery
+      STORAGE_DIR: /app/storage
+    volumes: [resumes:/app/storage]
+    depends_on: [backend]
+
+  beat:
+    build: ./backend
+    command: celery -A app.worker.celery_app beat -l info
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://jobhunt:${POSTGRES_PASSWORD:-jobhunt}@postgres:5432/jobhunt
+      REDIS_URL: redis://redis:6379/0
+    depends_on: [backend]
+    profiles: [scheduled]
+
+  frontend:
+    build:
+      context: ./frontend
+      args: { BACKEND_URL: "http://backend:8000" }
+    environment:
+      BACKEND_URL: http://backend:8000
+    depends_on: [backend]
+    ports: ["3000:3000"]
+
+volumes:
+  pgdata:
+  resumes:

@@ -1,0 +1,13 @@
+.venv/
+.venv321/
+venv/
+venv*/
+node_modules/
+.next/
+__pycache__/
+*.db
+*.db-*
+backend/storage/
+.env
+.pytest_cache/
+*.tsbuildinfo

@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 33% 98%;
+    --foreground: 224 30% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 30% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 30% 12%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 20% 94%;
+    --secondary-foreground: 224 30% 18%;
+    --muted: 220 20% 95%;
+    --muted-foreground: 220 10% 44%;
+    --accent: 243 80% 96%;
+    --accent-foreground: 243 60% 40%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 152 60% 38%;
+    --success-foreground: 0 0% 100%;
+    --warning: 35 92% 45%;
+    --warning-foreground: 0 0% 100%;
+    --border: 220 16% 90%;
+    --input: 220 16% 88%;
+    --ring: 243 75% 59%;
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 224 20% 30%;
+    --radius: 0.75rem;
+  }
+  .dark {
+    --background: 228 22% 7%;
+    --foreground: 220 20% 94%;
+    --card: 228 20% 10%;
+    --card-foreground: 220 20% 94%;
+    --popover: 228 20% 11%;
+    --popover-foreground: 220 20% 94%;
+    --primary: 243 85% 68%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 228 16% 16%;
+    --secondary-foreground: 220 20% 90%;
+    --muted: 228 16% 15%;
+    --muted-foreground: 220 10% 62%;
+    --accent: 243 40% 20%;
+    --accent-foreground: 243 90% 85%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 152 55% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 0 0% 10%;
+    --border: 228 14% 18%;
+    --input: 228 14% 22%;
+    --ring: 243 85% 68%;
+    --sidebar: 228 22% 9%;
+    --sidebar-foreground: 220 15% 75%;
+  }
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground antialiased; font-feature-settings: "cv11", "ss01"; }
+  ::selection { @apply bg-primary/20; }
+}
+
+@layer utilities {
+  .scrollbar-thin { scrollbar-width: thin; }
+  .text-balance { text-wrap: balance; }
+  .bg-grid {
+    background-image: radial-gradient(hsl(var(--border)) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+}
